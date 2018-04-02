@@ -1,7 +1,7 @@
 <?php
-namespace app\index\controller;
+namespace app\admin\controller;
 
-class Home
+class Home extends AdminController
 {
     public function Home()
     {

@@ -1,25 +1,23 @@
 <?php
-
 namespace app\admin\controller;
 
-use think\db;
-use app\admin\model\TicketModel;
+use app\admin\model\EquipModel;
 
-class Ticket extends AdminController
+class Equip extends AdminController
 {
-    private $model_ticket = [];
+    private $model_equip = [];
 
     public function __construct()
     {
         parent::__construct();
-        $this->model_ticket = new TicketModel;
+        $this->model_equip = new EquipModel();
     }
     /**
-     * 添加门票
+     * 添加装备
      */
-    public function ticket_add()
+    public function equip_add()
     {
-        $post_data = ['ticket_name', 'scenic_name', 'city', 'delivery_num', 'price', 'introduce'];
+        $post_data = ['equip_name'];
         //字段检查
         $post_error = parameter_check($post_data, 1);    //1：不能为空
         if ($post_error['code'] != 200) {
@@ -27,26 +25,26 @@ class Ticket extends AdminController
         }
         $data = $post_error['data'];
         $data['real_num'] = $data['delivery_num'];
-        if ($this->model_ticket->save($data)) {
+        if ($this->model_equip->save($data)) {
             return return_info(200, '操作成功');
         } else {
             return return_info(300, '操作失败');
         }
     }
     /**
-     * 门票列表
+     * 装备列表
      */
-    public function ticket_list(){
+    public function equip_list(){
         $is_outexcel = input('get.is_outexcel');   //1：导出excel表
         $condition = [];
         $join = [];
-        $field = 'a.ticket_name, a.scenic_name, a.introduce, a.city';
-        $order = 'a.ticket_id desc';
+        $field = 'a.equip_name, a.scenic_name, a.introduce, a.city';
+        $order = 'a.equip_id desc';
         if ($is_outexcel == 1) {  //导出
-            $arr['list'] = $this->model_ticket->getListInfo($condition, $join, $field, $order);
+            $arr['list'] = $this->model_equip->getListInfo($condition, $join, $field, $order);
         } else {
-            $field .= ', a.ticket_id';
-            $list = $this->model_ticket->getListPageTotalInfo($condition, $join, $field, $order);
+            $field .= ', a.equip_id';
+            $list = $this->model_equip->getListPageTotalInfo($condition, $join, $field, $order);
             $arr['list'] = $list->all();
             $arr['total'] = $list->total();  //获取最后一页数据
             $arr['last_page'] = (int)ceil($list->total() / 20);  //获取最后一页数据
@@ -59,21 +57,21 @@ class Ticket extends AdminController
         }
         if ($is_outexcel == 1) {  //导出
             $arr1[] = '';
-            createExcel($arr1, $arr['list']->toArray(), '门票列表');
+            createExcel($arr1, $arr['list']->toArray(), '装备列表');
         } else {
-            return return_info(200, '门票列表', $arr);
+            return return_info(200, '装备列表', $arr);
         }
     }
     /**
-     * 删除门票
+     * 删除装备
      */
-    public function ticket_del()
+    public function equip_del()
     {
-        $ticket_id = input('post.ticket_id');
-        if (empty($ticket_id)) {
+        $equip_id = input('post.equip_id');
+        if (empty($equip_id)) {
             return return_info();
         }
-        if ($this->model_ticket->save(['status'=>70], ['ticket_id'=>$ticket_id])) {
+        if ($this->model_equip->save(['status'=>70], ['equip_id'=>$equip_id])) {
 //            echo Db::getLastSql();
             return return_info(200, '删除成功');
         } else {
@@ -81,18 +79,17 @@ class Ticket extends AdminController
         }
     }
     /**
-     * 门票详情
+     * 装备详情
      */
-    public function ticket_detail()
+    public function equip_detail()
     {
-        $ticket_id = input('post.ticket_id');
-        if (empty($ticket_id)) {
+        $equip_id = input('post.equip_id');
+        if (empty($equip_id)) {
             return return_info();
         }
-        if (!$this->model_ticket->get($ticket_id)) {
-            return return_info(300, '找不到该门票');
+        if (!$this->model_equip->get($equip_id)) {
+            return return_info(300, '找不到该装备');
         }
 
     }
-
 }
