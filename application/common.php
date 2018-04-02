@@ -1,4 +1,6 @@
 <?php
+use app\lib\Excel;
+
 /**
  * 参数检查 用于新增数据
  * @param $arr  需要接收的字段的数组集合
