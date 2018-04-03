@@ -2,8 +2,8 @@
 
 namespace app\admin\controller;
 
-use app\other\model\StorageImagesModel;
 use think\db;
+use app\other\model\StorageImagesModel;
 use app\admin\model\TicketModel;
 
 class Ticket extends AdminController
@@ -16,9 +16,9 @@ class Ticket extends AdminController
         $this->model_ticket = new TicketModel;
     }
     /**
-     * 添加门票
+     * 添加/修改门票
      */
-    public function ticket_add()
+    public function ticket_add_update()
     {
         $model_storage_images = new StorageImagesModel();
         $post_data = ['ticket_name', 'scenic_name', 'narea', 'delivery_num', 'price', 'leave_type', 'introduce', 'attention', 'is_hot', 'is_sale', 'sale_price'];
@@ -32,12 +32,24 @@ class Ticket extends AdminController
             return return_info(300, '请上传图片');
         }
         $data = $post_error['data'];
-        $data['real_num'] = $data['delivery_num'];
         $data['leave_date'] = input('post.leave_date') ? input('post.leave_date') : '';
-        if(!$this->model_ticket->save($data)){
-            return return_info(300, '添加门票失败');
+        $ticket_id = input('post.ticket_id');
+        if(empty($ticket_id)){
+            $data['real_num'] = $data['delivery_num'];
+            if(!$this->model_ticket->save($data)){
+                return return_info(300, '添加门票失败');
+            }
+            $ticket_id = $this->model_ticket->ticket_id;
+        }else{  //修改
+            $ticket = $this->model_ticket->where(['ticket_id'=>$ticket_id])->value('delivery_num');
+            if(!$ticket){
+                return return_info(300, '找不到该门票');
+            }
+            //实时数 = 实时数 + (new - 基础数)
+            $data['real_num'] = ['exp', 'real_num + ' . $data['delivery_num'] . '-'. $ticket];
+            $this->model_ticket->save($data,['ticket_id'=>$ticket_id]);
+//            echo Db::getLastSql();
         }
-        $ticket_id = $this->model_ticket->ticket_id;
         //处理门票图片
         $res = $model_storage_images->handle_images($images, ['ticket_id'=>$ticket_id], 1);
         if($res['code'] != 200){
