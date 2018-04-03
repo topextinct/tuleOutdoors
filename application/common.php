@@ -34,6 +34,19 @@ function myFloor($num)
 }
 
 /**
+ * 图片url处理
+ * @param string $img_url   图片类型  不同图片类型对应其默认的裁剪方式和图片尺寸
+ * @param string $type  裁剪方式
+ * @param string $n
+ * @param string $size 裁剪尺寸
+ * @return string
+ */
+function tule_img($img_url = '',$type = '',$n = '', $size = ''){
+    $img_path_root = BASE_DATA_PATH;
+    //后续做图片裁剪处理
+    return empty($img_url) ? '' : $img_path_root.$img_url;
+}
+/**
  * 返回信息
  * @param string $code  200：成功  300：失败
  * @param string $message

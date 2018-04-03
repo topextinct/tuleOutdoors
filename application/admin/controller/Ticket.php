@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\other\model\StorageImagesModel;
 use think\db;
 use app\admin\model\TicketModel;
 
@@ -19,28 +20,42 @@ class Ticket extends AdminController
      */
     public function ticket_add()
     {
-        $post_data = ['ticket_name', 'scenic_name', 'city', 'delivery_num', 'price', 'introduce'];
+        $model_storage_images = new StorageImagesModel();
+        $post_data = ['ticket_name', 'scenic_name', 'narea', 'delivery_num', 'price', 'leave_type', 'introduce', 'attention', 'is_hot', 'is_sale', 'sale_price'];
         //字段检查
         $post_error = parameter_check($post_data, 1);    //1：不能为空
         if ($post_error['code'] != 200) {
             return $post_error;
         }
+        $images = json_decode(input('post.images'),1);
+        if(empty($images) || count($images) < 1){
+            return return_info(300, '请上传图片');
+        }
         $data = $post_error['data'];
         $data['real_num'] = $data['delivery_num'];
-        if ($this->model_ticket->save($data)) {
-            return return_info(200, '操作成功');
-        } else {
-            return return_info(300, '操作失败');
+        $data['leave_date'] = input('post.leave_date') ? input('post.leave_date') : '';
+        if(!$this->model_ticket->save($data)){
+            return return_info(300, '添加门票失败');
         }
+        $ticket_id = $this->model_ticket->ticket_id;
+        //处理门票图片
+        $res = $model_storage_images->handle_images($images, ['ticket_id'=>$ticket_id], 1);
+        if($res['code'] != 200){
+            $this->model_ticket->where(['ticket_id'=>$ticket_id])->delete();
+            return $res;
+        }
+        $this->model_ticket->ticket_img = $res['data'][0]['image'];
+        $this->model_ticket->save();
+        return return_info(200, '操作成功');
     }
     /**
      * 门票列表
      */
     public function ticket_list(){
         $is_outexcel = input('get.is_outexcel');   //1：导出excel表
-        $condition = [];
+        $condition['status'] = 1;
         $join = [];
-        $field = 'a.ticket_name, a.scenic_name, a.introduce, a.city';
+        $field = 'a.leave_type, a.leave_date, a.ticket_name, a.price, a.scenic_name, a.delivery_num, a.real_num, a.narea';
         $order = 'a.ticket_id desc';
         if ($is_outexcel == 1) {  //导出
             $arr['list'] = $this->model_ticket->getListInfo($condition, $join, $field, $order);
@@ -55,7 +70,7 @@ class Ticket extends AdminController
             return return_info('300', '没有更多数据了');
         }
         foreach ($arr['list'] as $k => &$v) {
-
+            if($v['leave_type'] == 1)$v['leave_date'] = date('Y-m-d', TIMESTAMP);
         }
         if ($is_outexcel == 1) {  //导出
             $arr1[] = '';
@@ -85,14 +100,29 @@ class Ticket extends AdminController
      */
     public function ticket_detail()
     {
+        $model_storage_images = new StorageImagesModel();
         $ticket_id = input('post.ticket_id');
         if (empty($ticket_id)) {
             return return_info();
         }
-        if (!$this->model_ticket->get($ticket_id)) {
+        $res = $this->model_ticket->getInfo(['ticket_id'=>$ticket_id, 'status'=>1]);
+        if (!$res) {
             return return_info(300, '找不到该门票');
         }
-
+        unset($res['ticket_img']);
+        $data['ticket_id'] = $ticket_id;
+        $res['images'] = $model_storage_images->show_img($data, 1);
+        return return_info(200, '门票详情', $res);
     }
+
+
+
+
+
+
+
+
+
+
 
 }

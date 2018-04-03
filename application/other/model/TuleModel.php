@@ -8,7 +8,7 @@ class TuleModel extends Model
     /**
      * @var string 表前缀
      */
-    private $prefix = 'mall_';
+    private $prefix = 'way_';
     // 关闭自动写入update_time字段
     protected $updateTime = false;
 
