@@ -27,8 +27,9 @@ class StorageImagesModel extends TuleModel
                     $where['ticket_id'] =  $data['ticket_id'];
                     break;
                 case 2:
-                    break;
                 case 3:
+                    //装备图片
+                    $where['ticket_id'] =  $data['ticket_id'];
                     break;
                 default :
                     throw new \Exception('图片类型错误');

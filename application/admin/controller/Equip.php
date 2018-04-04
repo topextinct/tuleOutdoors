@@ -1,7 +1,8 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\model\EquipModel;
+use app\equip\model\EquipModel;
+use app\other\model\StorageImagesModel;
 
 class Equip extends AdminController
 {
@@ -17,19 +18,41 @@ class Equip extends AdminController
      */
     public function equip_add()
     {
-        $post_data = ['equip_name'];
+        $model_storage_images = new StorageImagesModel();
+        $post_data = ['equip_name', 'purpose', 'classify_id', 'classify_name', 'is_hot', 'is_sale'];
         //字段检查
         $post_error = parameter_check($post_data, 1);    //1：不能为空
         if ($post_error['code'] != 200) {
             return $post_error;
         }
-        $data = $post_error['data'];
-        $data['real_num'] = $data['delivery_num'];
-        if ($this->model_equip->save($data)) {
-            return return_info(200, '操作成功');
-        } else {
-            return return_info(300, '操作失败');
+        $images = json_decode(input('post.images'),1);  //轮播图
+        $introduce_images = json_decode(input('post.introduce_images'),1);  //介绍图
+        if(empty($images) || count($images) < 1){
+            return return_info(300, '请上传轮播图');
         }
+        if(empty($introduce_images) || count($introduce_images) < 1){
+            return return_info(300, '请上传产品介绍图');
+        }
+        $data = $post_error['data'];
+        $data['sale_price'] = input('post.sale_price'); //特卖价
+        $equip_id = input('post.equip_id');
+        if(empty($equip_id)){
+            if(!$this->model_equip->save($data)){
+                return return_info(300, '添加失败');
+            }
+            $equip_id = $this->model_equip->equip_id;
+        }
+//        echo Db::getLastSql();
+
+        //处理图片
+        $res = $model_storage_images->handle_images($images, ['equip_id'=>$equip_id], 1);
+        if($res['code'] != 200){
+            $this->model_equip->where(['equip_id'=>$equip_id])->delete();
+            return $res;
+        }
+        $this->model_equip->equip_img = $res['data'][0]['image'];
+        $this->model_equip->save();
+        return return_info(200, '操作成功');
     }
     /**
      * 装备列表

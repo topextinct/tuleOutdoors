@@ -1,5 +1,5 @@
 <?php
-namespace app\admin\model;
+namespace app\equip\model;
 
 use app\other\model\TuleModel;
 

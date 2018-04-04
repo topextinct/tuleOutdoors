@@ -1,5 +1,5 @@
 <?php
-namespace app\admin\model;
+namespace app\ticket\model;
 
 use app\other\model\TuleModel;
 
