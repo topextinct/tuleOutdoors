@@ -1,4 +1,4 @@
-<?php
+， <?php
 namespace app\index\controller;
 
 class Home
