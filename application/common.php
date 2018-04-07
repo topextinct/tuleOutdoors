@@ -1,4 +1,6 @@
 <?php
+use app\lib\Excel;
+
 /**
  * 参数检查 用于新增数据
  * @param $arr  需要接收的字段的数组集合
@@ -24,16 +26,32 @@ function parameter_check($arr, $type = 0){
  * 金额取小数点后面两位
  * @param $num
  * @return string
+ * @return mixed
  */
 function myFloor($num)
 {
     return sprintf("%.2f", ($num * 100) / 100);
 }
+
+/**
+ * 图片url处理
+ * @param string $img_url   图片类型  不同图片类型对应其默认的裁剪方式和图片尺寸
+ * @param string $type  裁剪方式
+ * @param string $n
+ * @param string $size 裁剪尺寸
+ * @return string
+ */
+function tule_img($img_url = '',$type = '',$n = '', $size = ''){
+    $img_path_root = BASE_DATA_PATH;
+    //后续做图片裁剪处理
+    return empty($img_url) ? '' : $img_path_root.$img_url;
+}
 /**
  * 返回信息
- * @param $code 200：成功  300：失败
- * @param $message
- * @param $data
+ * @param string $code  200：成功  300：失败
+ * @param string $message
+ * @param null $data
+ * @return mixed
  */
 function return_info($code = '300', $message = '信息错误', $data = null)
 {
@@ -42,6 +60,60 @@ function return_info($code = '300', $message = '信息错误', $data = null)
 
     if ($data !== null) {
         $arr['data'] = $data;
+    }
+    return $arr;
+}
+/**
+ * 根据数组生成excel
+ * @param array $data   //第一行
+ * @param array $arr    //处理过的需要导出的数据
+ * @param string $title     //文件名
+ */
+function createExcel($data = [], $arr = [], $title = '') {
+    $excel_obj = new Excel();
+    $excel_data = [];
+    //设置样式
+    $excel_obj->setStyle(['id' => 's_title', 'Font' => ['FontName' => '宋体', 'Size' => '12', 'Bold' => '1']]);
+    //header
+    foreach ($data as $v){
+        $excel_data[0][] = ['styleid' => 's_title', 'data' => $v];
+    }
+    foreach ($arr as $k => $v) {
+        $tmp = [];
+        foreach ($v as $value){
+            $tmp[] = ['data' => $value];
+        }
+        $excel_data[] = $tmp;
+    }
+    $excel_data = $excel_obj->charset($excel_data, 'utf-8');
+    $excel_obj->addArray($excel_data);
+    $excel_obj->addWorksheet($excel_obj->charset($title, 'utf-8'));
+    $excel_obj->generateXML($excel_obj->charset($title, 'utf-8') . '-' . date('Y-m-d-H', time()));
+}
+/**
+ * 同统一转换字符串
+ * @param $arr
+ * @return mixed
+ */
+function arr_foreach(&$arr) {
+    if (!is_array($arr)) {
+        return $arr;
+    }
+    foreach ($arr as $key => &$val) {
+        if (is_array($val)) {
+            arr_foreach($val);
+        } else {
+            if (!is_string($val)) {
+                if(!is_object($val)){  // 不是字符串  不是对象 就转换为字符串
+                    $val = strval($val);
+                }else{
+                    if(is_subclass_of($val,'\app\other\model\TuleModel')){
+                        $val = $val->toArray();
+                        arr_foreach($val);
+                    }
+                }
+            }
+        }
     }
     return $arr;
 }

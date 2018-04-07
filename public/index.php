@@ -13,5 +13,12 @@
 
 // 定义应用目录
 define('APP_PATH', __DIR__ . '/../application/');
+
+define('BASE_ROOT_PATH',str_replace('\\','/',dirname(__FILE__)));
+define('BASE_DATA_PATH',BASE_ROOT_PATH.'/../upload/');
+
+
+define('TIMESTAMP', time());
+
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';
