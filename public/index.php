@@ -18,6 +18,7 @@ define('BASE_ROOT_PATH',str_replace('\\','/',dirname(__FILE__)));
 define('BASE_DATA_PATH',BASE_ROOT_PATH.'/../upload/');
 
 
+define('API_URL', 'http://jztule.com/api/public/index.php/');
 define('TIMESTAMP', time());
 
 // 加载框架引导文件

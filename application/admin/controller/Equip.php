@@ -142,7 +142,7 @@ class Equip extends AdminController
             $field .= ', a.equip_id';
             $list = $this->model_equip->getListPageTotalInfo($condition, $join, $field, $order);
             $arr['list'] = $list->all();
-            $arr['total'] = $list->total();  //获取最后一页数据
+            $arr['total'] = $list->total();  //总数
             $arr['last_page'] = (int)ceil($list->total() / 20);  //获取最后一页数据
         }
         if (count($arr['list']) < 1) {
