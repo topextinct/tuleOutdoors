@@ -395,8 +395,10 @@ class File extends SplFileObject
                         break;
                     default:
                         if (in_array($this->rule, hash_algos())) {
-                            $hash     = $this->hash($this->rule);
-                            $savename = substr($hash, 0, 2) . DS . substr($hash, 2);
+//                            $hash     = $this->hash($this->rule);
+//                            $savename = substr($hash, 0, 2) . DS . substr($hash, 2);
+                            //魔改  防止多创建目录
+                            $savename = $this->hash($this->rule);
                         } elseif (is_callable($this->rule)) {
                             $savename = call_user_func($this->rule);
                         } else {

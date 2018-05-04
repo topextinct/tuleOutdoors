@@ -94,7 +94,7 @@ class Equip extends AdminController
         $where['equip_id'] =  $data['equip_id'];
 
         //将原有图片解除关系
-        $model_storage_images->save(['status'=>0],$where);
+        $model_storage_images->where($where)->update(['status'=>0]);
         //绑定新的图片
         $return_data = [];
         foreach ($images as $k=>&$v){
@@ -103,12 +103,9 @@ class Equip extends AdminController
             if(!$img){
                 return return_info(300, '第'.($k+1).'张图片不存在');
             }
-            $img->order = $k + 1; //多图片的情况下 处理图片排序
-            foreach ($data as $k1 => $v2){
-                $img->$k1 = $v2;
-            }
-            $img->status = 1;
-            if(!$img->save()){
+            $data['order'] = $k + 1; //多图片的情况下 处理图片排序
+            $data['status'] = 1;
+            if(!$img->where(['id'=>$v])->update($data)){
                 return return_info(300, '绑定第'.($k+1).'张新图片失败');
             }
         }

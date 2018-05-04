@@ -74,9 +74,10 @@ class StorageImagesModel extends TuleModel
      */
     public function show_img(array $data, $type){
         $data['type'] = $type;
+        $data['status'] = 1;
         $arr = $this->where($data)->field('id,image')->select();
         foreach ($arr as $k=>&$v){
-            $v['image'] = BASE_DATA_PATH.$v['image'];
+            $v['image'] = IMG_DOMAIN.$v['image'];
         }
         return $arr;
     }
