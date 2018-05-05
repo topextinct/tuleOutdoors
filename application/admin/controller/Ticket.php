@@ -35,7 +35,7 @@ class Ticket extends AdminController
         }
         $data = $post_error['data'];
         $data['sale_price'] = input('post.sale_price'); //特卖价
-        $data['leave_date'] = input('post.leave_date') ? input('post.leave_date') : '';
+        $data['leave_date'] = input('post.leave_date') ? input('post.leave_date') : ''; //出发时间
         if(empty($ticket_id)){
             $data['real_num'] = $data['delivery_num'];
             if(!$this->model_ticket->save($data)){

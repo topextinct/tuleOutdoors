@@ -36,14 +36,15 @@ class Img
         if ($info) {
             // 成功上传后 获取上传信息
             $con['image']= $attr_path . $date .'/'. $info->getFilename();
-            $con['abs_image']= $path .'/'. $info->getFilename();
+            $url = IMG_DOMAIN . $attr_path . $date .'/'. $info->getFilename();
+            $con['abs_image']= $url;
             $con['type']=$type;
             $id = $model_storage_images->save($con);
             if(!$id){
                 return ['code' => 300, 'message' => '图片数据入库失败'];
             }
             $data['id'] = $model_storage_images->id;
-            $data['url'] = $path .'/'. $info->getFilename();
+            $data['url'] = $url;
             return ['code' => 200, 'message' => '上传成功', 'data' => $data];
         } else {
             // 上传失败获取错误信息
