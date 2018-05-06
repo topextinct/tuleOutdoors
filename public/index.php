@@ -22,13 +22,14 @@ define('APP_PATH', __DIR__ . '/../application/');
 //上传图片那边的
 define('BASE_ROOT_PATH',str_replace('\\','/',dirname(__FILE__)));
 define('BASE_DATA_PATH',BASE_ROOT_PATH.'/../upload/');
-
-define('TIMESTAMP', time());
-
 //接口路径
 define('API_URL', 'http://jztule.com/api/public/index.php/');
 //图片路径
 define('IMG_DOMAIN','http://jztule.com/api/upload/');
+
+define('TIMESTAMP', time());
+define('PAGE_SIZE', 10);
+
 
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';

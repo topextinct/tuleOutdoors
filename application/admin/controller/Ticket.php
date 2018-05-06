@@ -71,6 +71,7 @@ class Ticket extends AdminController
         $narea = input('narea');    //所在地
         $leave_date = input('leave_date');    //出发时间
         $is_outexcel = input('get.is_outexcel');   //1：导出excel表
+        $page_size = input('page_size') ? input('page_size') : PAGE_SIZE ;    //每页多少条
         $condition = [];
         if (!empty($search_field_name) && !empty($search_field_value)) {   //搜索类型及值
             $condition['a.'.$search_field_name] = ['like','%'.$search_field_value.'%'];
@@ -90,7 +91,7 @@ class Ticket extends AdminController
             $arr['list'] = $this->model_ticket->getListInfo($condition, $join, $field, $order);
         } else {
             $field .= ', a.ticket_id';
-            $list = $this->model_ticket->getListPageTotalInfo($condition, $join, $field, $order);
+            $list = $this->model_ticket->getListPageTotalInfo($condition, $join, $field, $order, $page_size);
             $arr['list'] = $list->all();
             $arr['total'] = $list->total();  //总数
             $arr['last_page'] = (int)ceil($list->total() / 20);  //获取最后一页数据
@@ -102,6 +103,7 @@ class Ticket extends AdminController
         foreach ($arr['list'] as $k => &$v) {
             if($v['leave_type'] == 1)$v['leave_date'] = date('Y-m-d', TIMESTAMP);
             unset($v['leave_type']);
+            $v = $v->toArray();
         }
         if ($is_outexcel == 1) {  //导出
             $arr1[] = '出发时间';

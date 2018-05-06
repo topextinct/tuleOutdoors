@@ -68,8 +68,6 @@ class StorageImagesModel extends TuleModel
      * 展示图片
      * @param array $data
      * @param $type
-     * @param array $data
-     * @param $type
      * @return false|\PDOStatement|string|\think\Collection
      */
     public function show_img(array $data, $type){

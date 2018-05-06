@@ -42,7 +42,7 @@ function myFloor($num)
  * @return string
  */
 function tule_img($img_url = '',$type = '',$n = '', $size = ''){
-    $img_path_root = BASE_DATA_PATH;
+    $img_path_root = IMG_DOMAIN;
     //后续做图片裁剪处理
     return empty($img_url) ? '' : $img_path_root.$img_url;
 }
