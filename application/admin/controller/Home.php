@@ -12,8 +12,11 @@ class Home extends AdminController
         $model_equip = new EquipModel();
         $ticket = $model_ticket->where(['status'=>1])->count();
         $equip = $model_equip->where(['status'=>1])->count();
-        $arr[] = ['title' => '��Ʊ����('.$ticket.')'];
-        $arr[] = ['title' => 'װ������('.$equip.')'];
-        return return_info('200', '��ҳ�ſ�', $arr);
+        $member = $model_equip->where(['status'=>1])->count();
+        $arr[] = ['title' => '门票管理('.$ticket.')'];
+        $arr[] = ['title' => '装备管理('.$equip.')'];
+        $arr[] = ['title' => '订单管理(0)'];
+        $arr[] = ['title' => '装备管理('.$member.')'];
+        return return_info('200', '首页', $arr);
     }
 }

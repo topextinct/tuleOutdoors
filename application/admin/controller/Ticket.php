@@ -101,7 +101,7 @@ class Ticket extends AdminController
             return return_info('300', '没有更多数据了');
         }
         foreach ($arr['list'] as $k => &$v) {
-            if($v['leave_type'] == 1)$v['leave_date'] = date('Y-m-d', TIMESTAMP);
+            if($v['leave_type'] == 1)$v['leave_date'] = date('Y-m-d', strtotime('+1day', TIMESTAMP));
             unset($v['leave_type']);
             $v = $v->toArray();
         }

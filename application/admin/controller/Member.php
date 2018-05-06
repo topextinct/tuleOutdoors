@@ -44,7 +44,10 @@ class Member extends AdminController
             return return_info('300', '没有更多数据了');
         }
         foreach ($arr['list'] as $k => &$v) {
-            $v['member_avatar'] = tule_img($v['member_avatar'], 4);
+            if ($is_outexcel != 1) {
+                $v['member_avatar'] = tule_img($v['member_avatar'], 4);
+            }
+            $v['order_num'] = '0';
             $v = $v->toArray();
         }
         if ($is_outexcel == 1) {  //导出
@@ -53,6 +56,7 @@ class Member extends AdminController
             $arr1[] = '真实姓名';
             $arr1[] = '昵称';
             $arr1[] = '注册时间';
+            $arr1[] = '订单总数';
             createExcel($arr1, $arr['list'], '会员列表');
         } else {
             return return_info(200, '会员列表', $arr);

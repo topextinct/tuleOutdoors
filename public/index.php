@@ -29,6 +29,7 @@ define('IMG_DOMAIN','http://jztule.com/api/upload/');
 
 define('TIMESTAMP', time());
 define('PAGE_SIZE', 10);
+define('WX_PAGE_SIZE', 10);
 
 
 // 加载框架引导文件

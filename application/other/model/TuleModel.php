@@ -53,6 +53,20 @@ class TuleModel extends Model
      * @param int $pagesize 每页数
      * @return mixed
      */
+    public function getListPageInfo($where = [], $join = [], $field = '*', $order = '', $pagesize = 10)
+    {
+        $res_list = $this->alias('a')->where($where)->join($join)->field($field)->order($order)->paginate($pagesize);
+        return $res_list->all();
+    }
+    /**
+     * 分页显示列表
+     * @param array $where
+     * @param array $join 连表
+     * @param string $field
+     * @param string $order 排序
+     * @param int $pagesize 每页数
+     * @return mixed
+     */
     public function getListPageTotalInfo($where = [], $join = [], $field = '*', $order = '', $pagesize = 10)
     {
         $res = $this->alias('a')->where($where)->join($join)->field($field)->order($order)->paginate($pagesize);
