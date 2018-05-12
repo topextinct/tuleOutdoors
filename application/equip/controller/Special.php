@@ -26,12 +26,12 @@ class Special extends Controller
         //读取分类
         $res['class'] = $model_class->getListInfo([], [], 'class_id, class_name', 'class_id desc');
         //读取列表
-        $condition['status'] = 1;
-        $field = 'a.equip_id, a.equip_name, a.price, a.sale_price, a.is_hot, a.equip_img';
-        $order = 'a.equip_id desc';
-        $res['list'] = $this->model_equip->getListPageInfo($condition, [], $field, $order);
-
-
+        $list = $this->equip_list();
+        if($list['code'] == 200){
+            $res['list'] = $list['data'];
+        }else{
+            $res['list'] = [];
+        }
         return return_info('200', '装备专区首页', $res);
     }
     /**
