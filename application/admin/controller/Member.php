@@ -22,7 +22,6 @@ class Member extends AdminController
         $search_field_name = input('search_field_name');    //member_name 账号；member_truename 姓名；member_mobile 手机号
         $search_field_value = input('search_field_value');
         $is_outexcel = input('get.is_outexcel');   //1：导出excel表
-        $page_size = input('page_size') ? input('page_size') : PAGE_SIZE ;    //每页多少条
         $condition = [];
         if (!empty($search_field_name) && !empty($search_field_value)) {   //搜索类型及值
             $condition['a.'.$search_field_name] = ['like','%'.$search_field_value.'%'];
@@ -35,7 +34,7 @@ class Member extends AdminController
             $arr['list'] = $this->model_member->getListInfo($condition, $join, $field, $order);
         } else {
             $field .= ', a.member_id, a.member_avatar';
-            $list = $this->model_member->getListPageTotalInfo($condition, $join, $field, $order, $page_size);
+            $list = $this->model_member->getListPageTotalInfo($condition, $join, $field, $order);
             $arr['list'] = $list->all();
             $arr['total'] = $list->total(); //总数
             $arr['last_page'] = (int)ceil($list->total() / 20);  //获取最后一页数据

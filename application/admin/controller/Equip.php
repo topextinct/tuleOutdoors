@@ -119,7 +119,6 @@ class Equip extends AdminController
         $purpose = input('purpose');     //用途
         $classify_name = input('classify_name');    //分类名
         $is_outexcel = input('get.is_outexcel');   //1：导出excel表
-        $page_size = input('page_size') ? input('page_size') : PAGE_SIZE ;    //每页多少条
         $condition = [];
         if (!empty($equip_name)) {
             $condition['a.equip_name'] = ['like','%'.$equip_name.'%'];
@@ -138,7 +137,7 @@ class Equip extends AdminController
             $arr['list'] = $this->model_equip->getListInfo($condition, $join, $field, $order);
         } else {
             $field .= ', a.equip_id';
-            $list = $this->model_equip->getListPageTotalInfo($condition, $join, $field, $order, $page_size);
+            $list = $this->model_equip->getListPageTotalInfo($condition, $join, $field, $order);
             $arr['list'] = $list->all();
             $arr['total'] = $list->total();  //总数
             $arr['last_page'] = (int)ceil($list->total() / 20);  //获取最后一页数据
