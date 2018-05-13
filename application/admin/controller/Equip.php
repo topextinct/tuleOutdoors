@@ -200,9 +200,11 @@ class Equip extends AdminController
      */
     public function class_add_update(){
         $model_class = new ClassModel();
+        $model_storage_images = new StorageImagesModel();
         $class_id = input('post.class_id');
         $class_name = input('post.class_name');
         $sort = input('post.sort');
+        $img_id = input('post.img_id');
 
         $data['class_name'] = $class_name;
         $data['sort'] = $sort;
@@ -213,6 +215,12 @@ class Equip extends AdminController
         if($model_class->getInfo($class)){
             return return_info(300, '该分类已存在');
         }
+        //查找该分类图
+        $image = $model_storage_images->getInfo(['id'=>$img_id, 'type'=>5], [], 'type, image');
+        if(empty($image)){
+            return return_info(300, '找不到该图');
+        }
+        $data['image'] = $image['image'];
         if(empty($class_id)){   //添加
             $res = $model_class->save($data);
         }else{  //修改
@@ -230,7 +238,9 @@ class Equip extends AdminController
     public function class_list(){
         $model_class = new ClassModel();
         $res = $model_class->getListInfo([],[], '*', 'class_id desc');
-
+        foreach($res as $k=>&$v){
+            $v['image'] = tule_img($v['image'], 5);
+        }
         return return_info(200, '分类列表', $res);
     }
 

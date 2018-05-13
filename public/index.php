@@ -25,7 +25,7 @@ define('BASE_DATA_PATH',BASE_ROOT_PATH.'/../upload/');
 //接口路径
 define('API_URL', 'http://jztule.com/api/public/index.php/');
 //图片路径
-define('IMG_DOMAIN','http://jztule.com/api/upload/');
+define('IMG_DOMAIN','https://api.jztule.com/upload/');
 
 define('TIMESTAMP', time());
 define('PAGE_SIZE', 10);
