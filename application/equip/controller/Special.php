@@ -25,34 +25,30 @@ class Special extends Controller
     public function special_index()
     {
         $model_class = new ClassModel();
-        $page_size = input('page_size') ? input('page_size') : WX_PAGE_SIZE;    //每页多少条
         //读取轮播
         $res['banner_image'] = [];
         //读取分类
         $res['class'] = $model_class->getListInfo([], [], 'class_id, class_name', 'class_id desc');
         //读取列表
         $list = $this->equip_list();
-        if ($list['code'] == 200) {
+        if($list['code'] == 200){
             $res['list'] = $list['data'];
-        } else {
+        }else{
             $res['list'] = [];
         }
-
         return return_info('200', '装备专区首页', $res);
     }
 
     /**
      * 装备列表
      */
-    public function equip_list()
-    {
-        $page_size = input('page_size') ? input('page_size') : WX_PAGE_SIZE;    //每页多少条
+    public function equip_list(){
 
         $con['status'] = 1;
         $field = 'equip_id, equip_name, equip_img, price, sale_price, is_hot, purpose';
         $order = 'a.equip_id desc';
-        $res = $this->model_equip->getListPageInfo($con, [], $field, $order, $page_size);
-        if (count($res) < 1) {
+        $res = $this->model_equip->getListPageInfo($con, [], $field, $order);
+        if(count($res) < 1){
             return return_info(300, '没有更多数据了');
         }
         return return_info(200, '装备列表', $res);

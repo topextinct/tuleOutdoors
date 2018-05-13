@@ -53,9 +53,10 @@ class TuleModel extends Model
      * @param int $pagesize 每页数
      * @return mixed
      */
-    public function getListPageInfo($where = [], $join = [], $field = '*', $order = '', $pagesize = 10)
+    public function getListPageInfo($where = [], $join = [], $field = '*', $order = '', $pagesize = WX_PAGE_SIZE)
     {
-        $res_list = $this->alias('a')->where($where)->join($join)->field($field)->order($order)->paginate($pagesize);
+        $page_size = input('page_size') ? input('page_size') : $pagesize ;    //每页多少条
+        $res_list = $this->alias('a')->where($where)->join($join)->field($field)->order($order)->paginate($page_size);
         return $res_list->all();
     }
     /**
@@ -67,9 +68,10 @@ class TuleModel extends Model
      * @param int $pagesize 每页数
      * @return mixed
      */
-    public function getListPageTotalInfo($where = [], $join = [], $field = '*', $order = '', $pagesize = 10)
+    public function getListPageTotalInfo($where = [], $join = [], $field = '*', $order = '', $pagesize = WX_PAGE_SIZE)
     {
-        $res = $this->alias('a')->where($where)->join($join)->field($field)->order($order)->paginate($pagesize);
+        $page_size = input('page_size') ? input('page_size') : $pagesize ;    //每页多少条
+        $res = $this->alias('a')->where($where)->join($join)->field($field)->order($order)->paginate($page_size);
         return $res;
     }
 }
